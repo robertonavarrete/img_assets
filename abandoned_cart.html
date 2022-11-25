@@ -1,3 +1,35 @@
+{{eval 'typeof Array.prototype.find == "undefined" ? Object.defineProperty(Array.prototype,"find",{value:function(r){if(null==this)throw new TypeError("this is null or not defined");var t=Object(this),e=t.length>>>0;if("function"!=typeof r)throw new TypeError("predicate must be a function");for(var n=arguments[1],o=0;e>o;){var i=t[o];if(r.call(n,i,o,t))return i;o++}return void 0}}) : "";'}}
+{{eval "Handlebars.registerHelper('registerHelper', function(block) {
+    eval('var customHelper =' + block.fn(this));
+    Handlebars.registerHelper(customHelper.name, customHelper);
+});"}}
+
+{{#registerHelper}}
+function sumItems(articulos){
+  return articulos.map(e=>parseInt(e.quantity)*parseInt(e.sellingPrice)).reduce((a,b)=>a+b)
+}
+{{/registerHelper}}
+
+{{#registerHelper}}
+function countItems(articulos){
+  return articulos.map(e=>parseInt(e.quantity)).reduce((a,b)=>a+b)
+}
+{{/registerHelper}}
+
+{{#registerHelper}}
+function MaysPrimera(string){
+    return string.charAt(0).toUpperCase() + string.slice(1);
+  }
+{{/registerHelper}}
+
+{{#registerHelper}}
+function pixelAnalytics(userId){
+    var fecha = new Date()
+    var fecha_envio = fecha.getFullYear()+"-"+fecha.getMonth()+"-"+fecha.getDate()
+    return '"https://www.google-analytics.com/collect?v=1&tid=UA-46206544-6&cid=CLIENT_ID_NUMBER&t=event&ec=email-carro-abandonado&ea='+userId+'&el='+fecha_envio+'&cs=email&cm=email&cn=carrito-abandonado&dp=email-carrito-abandonado&dt=email-carrito-abandonado"';
+  }
+{{/registerHelper}}
+
 <!DOCTYPE html>
 <html lang="en" xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:v="urn:schemas-microsoft-com:vml" style="-webkit-text-size-adjust: 100%;
                  -ms-text-size-adjust: 100%;
@@ -65,13 +97,13 @@
         cellspacing="0" border="0" bgcolor="#fff" class="main-table">
         <tbody>
             <!-- Header Content -->
-            <tr><td><img src="https://www.google-analytics.com/collect?v=1&tid=UA-46206544-6&cid=CLIENT_ID_NUMBER&t=event&ec=email-carro-abandonado&ea={{orderFormId}}&el={{fecha_envio}}&cs=email&cm=email&cn=carrito-abandonado&dp=email-carrito-abandonado&dt=email-carrito-abandonado" alt="" style="display:none!important"></td></tr>
+            <tr><td><img src={{pixelAnalytics _accountInfo.Id}} alt="" style="display:none!important"></td></tr>
             <tr>
                 <td>
                     <table align="center" cellspacing="0" cellpadding="0" border="0">
                         <tr height="0">
                             <td>
-                                <h1 style="text-align: center;font-size: 2em;font-weight: lighter;">Hola {{nombre}}, tu
+                                <h1 style="text-align: center;font-size: 2em;font-weight: lighter;">Hola {{MaysPrimera additionalFields.firstName}}, tu
                                     carro de compras espera por ti</h1>
                             </td>
                         </tr>
@@ -107,7 +139,7 @@
                                 <table align="center" cellspacing="0" border="0" width="600" style="background-color: #FFF4F4;">
                                     <tr>
                                         <td>
-                                        <h3 style="padding-left: 20px;padding-right: 20px;">Resumen <span style="color: red;font-weight:400">({{x}} productos)</span><hr style="background-color: red;height:3px;border-width:0;"></h3>
+                                        <h3 style="padding-left: 20px;padding-right: 20px;">Resumen <span style="color: red;font-weight:400">({{countItems items}} productos)</span><hr style="background-color: red;height:3px;border-width:0;"></h3>
                                     </td>
                                 </tr>
                                 </table>
@@ -122,7 +154,7 @@
                                             <h2 style="padding-left: 20px;">Subtotal</h2>
                                         </td>
                                         <td width="300">
-                                            <h2 style="text-align: right;padding-right: 20px;">{{valor}}</h2>
+                                            <h2 style="text-align: right;padding-right: 20px;">{{sumItems items}}</h2>
                                         </td>
                                     </tr>
                                 </table>
@@ -130,7 +162,7 @@
                         </tr>
                         <tr cellspacing="0" border="0" id="call-to-action">
                             <td style="padding:0;background-color: #FFF4F4">
-                                <a href="https://www.unimarc.cl/?utm_source=vtex&utm_medium=email&utm_campaign=tu-carro-te-espera&utm_content=cta" target="_blank">
+                                <a href="{{URL DEL CARRO}}?utm_source=vtex&utm_medium=email&utm_campaign=tu-carro-te-espera&utm_content=cta" target="_blank">
                                     <img src="https://raw.githubusercontent.com/robertonavarrete/img_assets/main/Frame%207866%202.png" alt="" width="600px" height="auto">
                                 </a>
                             </td>
