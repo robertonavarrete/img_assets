@@ -6,7 +6,9 @@
 
 {{#registerHelper}}
 function sumItems(articulos){
-  return articulos.map(e=>parseInt(e.quantity)*parseInt(e.sellingPrice)).reduce((a,b)=>a+b)
+  var subtotal= articulos.map(e=>parseInt(e.quantity)*parseInt(e.sellingPrice)).reduce((a,b)=>a+b)
+  var sobtotalFormat = Intl.NumberFormat('es-CL', {currency: 'CLP', style: 'currency'}).format(subtotal)
+  return subtotalFormat
 }
 {{/registerHelper}}
 
